@@ -3,7 +3,7 @@ name: build - check - upload
 on:
   push:
     branches:
-    - main
+    - '**'
     tags:
     - '**'
   pull_request:
@@ -26,15 +26,12 @@ jobs:
           - name: macOS
             matrix: macos
             runs-on:
-              arm: [macOS, ARM64]
               intel: [macos-latest]
             cibw-archs-macos:
-              arm: arm64
               intel: x86_64
           - name: Ubuntu
             matrix: ubuntu
             runs-on:
-              arm: [Linux, ARM64]
               intel: [ubuntu-latest]
           - name: Windows
             matrix: windows
@@ -72,8 +69,6 @@ jobs:
               intel: manylinux2014
             matrix: '3.11'
         arch:
-          - name: ARM
-            matrix: arm
           - name: Intel
             matrix: intel
         exclude:
@@ -93,7 +88,6 @@ jobs:
               name: macOS
               matrix: macos
               runs-on:
-                arm: [macOS, ARM64]
                 intel: [macos-latest]
             python:
               major-dot-minor: '3.7'
@@ -154,26 +148,7 @@ jobs:
         CIBW_BEFORE_BUILD_MACOS: >
           python -m pip install --upgrade pip
         CIBW_ENVIRONMENT_MACOS: "MACOSX_DEPLOYMENT_TARGET=10.14 BUILD_VDF_CLIENT=N"
-        CIBW_REPAIR_WHEEL_COMMAND_MACOS: >
-          pip uninstall -y delocate && pip install git+https://github.com/Chia-Network/delocate.git
-          && delocate-listdeps {wheel} && delocate-wheel -v {wheel}
-          && cp {wheel} {dest_dir}
-        CIBW_BEFORE_ALL_WINDOWS: >
-          git clone https://github.com/Chia-Network/mpir_gc_x64.git
         CIBW_ENVIRONMENT_WINDOWS: "BUILD_VDF_CLIENT=N SETUPTOOLS_USE_DISTUTILS=stdlib"
-        CIBW_REPAIR_WHEEL_COMMAND_WINDOWS: >
-          ls -l mpir_gc_x64 && pip uninstall -y delocate
-          && pip install git+https://github.com/Chia-Network/delocate.git
-          && delocate-wheel -v -i mpir_gc_x64/mpir.dll {wheel}
-          && delocate-wheel -v -i mpir_gc_x64/mpir_gc.dll {wheel}
-          && delocate-wheel -v -i mpir_gc_x64/mpir_broadwell.dll {wheel}
-          && delocate-wheel -v -i mpir_gc_x64/mpir_broadwell_avx.dll {wheel}
-          && delocate-wheel -v -i mpir_gc_x64/mpir_bulldozer.dll {wheel}
-          && delocate-wheel -v -i mpir_gc_x64/mpir_haswell.dll {wheel}
-          && delocate-wheel -v -i mpir_gc_x64/mpir_piledriver.dll {wheel}
-          && delocate-wheel -v -i mpir_gc_x64/mpir_sandybridge.dll {wheel}
-          && delocate-wheel -v -i mpir_gc_x64/mpir_skylake_avx.dll {wheel}
-          && cp {wheel} {dest_dir}
         CIBW_TEST_REQUIRES: pytest
         CIBW_TEST_COMMAND: py.test -v {project}/tests
         CIBW_PRERELEASE_PYTHONS: True
@@ -196,7 +171,7 @@ jobs:
           - name: Ubuntu
             matrix: ubuntu
             runs-on:
-              arm: [Linux, ARM64]
+              arm: []
               intel: [ubuntu-latest]
         python:
           - major-dot-minor: '3.9'
@@ -239,7 +214,7 @@ jobs:
           - name: Ubuntu
             matrix: ubuntu
             runs-on:
-              arm: [Linux, ARM64]
+              arm: []
               intel: [ubuntu-latest]
         python:
           - major-dot-minor: '3.9'
@@ -285,7 +260,7 @@ jobs:
           - name: Ubuntu
             matrix: ubuntu
             runs-on:
-              arm: [Linux, ARM64]
+              arm: []
               intel: [ubuntu-latest]
         python:
           - major-dot-minor: '3.9'

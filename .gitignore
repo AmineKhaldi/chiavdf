@@ -37,7 +37,7 @@ src/prover_test
 .python-version
 .eggs
 .venv
-venv
+venv*
 activate
 
 # Tests cache
